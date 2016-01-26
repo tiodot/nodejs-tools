@@ -96,7 +96,6 @@ function help () {
       '  node upload [options] filename(-f file)\n' +
     'Options:\n' +
       '  --help    | -h Print usage and options.\n' +
-      '  --version | -v Print current version.\n'     +
       '  --file    | -f Specify the upload file\n'    +
       '  --url     | -u Specify the server url, example: http://127.0.0.1:8000/upload\n' +
       '  --name    | -n The file name saved in server, default same with file name\n' +
