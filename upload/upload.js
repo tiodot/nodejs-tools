@@ -90,6 +90,34 @@ function upload (url, data, content, filename, callback) {
   req.end();
 }
 
+function uploadSingleFile(url, data, file, name) {
+  if (!name) {
+    name = path.basename(file);
+  }
+
+  if (url.indexOf('http://') === -1) {
+    url = 'http://' + url;
+  }
+
+  var content = fs.readFileSync(file);
+  console.log('uploading file [' + path.resolve(file) + '].......');
+  upload(url, data, content, name, function(err, msg){
+    if (err) {
+      console.log('Upload error\n');
+      console.error(err);
+    }
+    else {
+      console.log('The server [ ' + url + ' ] echo: ' + msg);
+    }
+  });
+}
+
+function uploadMultiFile(url, data, files) {
+  files.forEach(function(file) {
+    uploadSingleFile(url, data, file);
+  });
+}
+
 function help () {
   console.log(
     'Usage:\n' +
@@ -111,27 +139,15 @@ if (argv.h || argv.help) {
 var url = argv.u || argv.url || 'http://127.0.0.1:8000/upload';
 var to = argv.d || argv.dist || './';
 var name = argv.name || argv.n;
-var file = argv.file || argv.f || argv._.shift();
+var file = argv.file || argv.f || argv._;
 
-if (!file) {
+if (!file || (Array.isArray(file) && !file.length)) {
+  console.error('Need specify a file to upload');
   process.exit(1);
 }
-if (!name) {
-  name = path.basename(file);
-}
 
-if (url.indexOf('http://') === -1) {
-  url = 'http://' + url;
+if (Array.isArray(file)) {
+  uploadMultiFile(url, {to: to}, file);
+}else {
+  uploadSingleFile(url, {to: to}, file, name);
 }
-
-var content = fs.readFileSync(file);
-console.log('uploading file [' + path.resolve(file) + '].......');
-upload(url, {to: to}, content, name, function(err, msg){
-  if (err) {
-    console.log('Upload error\n');
-    console.error(err);
-  }
-  else {
-    console.log('The server [ ' + url + ' ] echo:\n' + msg);
-  }
-});
