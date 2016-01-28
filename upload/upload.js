@@ -3,6 +3,16 @@ var parseArgs = require('minimist');
 var argv = parseArgs(process.argv.slice(2));
 var path =require('path');
 
+var color = {
+  'black':            ['\x1B[30m', '\x1B[39m'],
+  'red':              ['\x1B[31m', '\x1B[39m'],
+  'green':            ['\x1B[32m', '\x1B[39m'],
+  'yellow':           ['\x1B[33m', '\x1B[39m'],
+  'blue':             ['\x1B[34m', '\x1B[39m'],
+  'magenta':          ['\x1B[35m', '\x1B[39m'],
+  'cyan':             ['\x1B[36m', '\x1B[39m'],
+  'white':            ['\x1B[37m', '\x1B[39m']
+};
 
 function map (obj, callback, merge) {
   var index = 0;
@@ -34,7 +44,7 @@ function upload (url, data, content, filename, callback) {
     content = new Buffer(content, 'utf8');
   }
   else if (!(content instanceof Buffer)) {
-    soi.log.error('unable to upload content [' + (typeof content) + ']');
+    console.error(color['red'][0], 'unable to upload content [' + (typeof content) + ']', color['red'][1]);
   }
 
   var endl = '\r\n';
@@ -100,14 +110,14 @@ function uploadSingleFile(url, data, file, name) {
   }
 
   var content = fs.readFileSync(file);
-  console.log('uploading file [' + path.resolve(file) + '].......');
+  console.log(color.blue[0], 'uploading file [' + path.resolve(file) + '].......', color.blue[1]);
   upload(url, data, content, name, function(err, msg){
     if (err) {
-      console.log('Upload error\n');
+      console.log(color.red[0], 'Upload error\n', color.red[1]);
       console.error(err);
     }
     else {
-      console.log('The server [ ' + url + ' ] echo: ' + msg);
+      console.log(color.cyan[0], 'The server [ ' + url + ' ] echo: ' + msg, color.cyan[1]);
     }
   });
 }
@@ -118,6 +128,7 @@ function uploadMultiFile(url, data, files) {
   });
 }
 
+
 function help () {
   console.log(
     'Usage:\n' +
@@ -127,7 +138,8 @@ function help () {
       '  --file    | -f Specify the upload file\n'    +
       '  --url     | -u Specify the server url, example: http://127.0.0.1:8000/upload\n' +
       '  --name    | -n The file name saved in server, default same with file name\n' +
-      '  --dist    | -d The file saved dir in server, default "./"\n'
+      '  --to      | -t The file saved dir in server, default "./"\n' +
+      '  --dir     | -d Upload directory'
   );
 }
 
@@ -142,7 +154,7 @@ var name = argv.name || argv.n;
 var file = argv.file || argv.f || argv._;
 
 if (!file || (Array.isArray(file) && !file.length)) {
-  console.error('Need specify a file to upload');
+  console.error(color.red[0], 'Need specify a file to upload', color.red[1]);
   process.exit(1);
 }
 
