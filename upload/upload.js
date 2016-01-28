@@ -128,6 +128,32 @@ function uploadMultiFile(url, data, files) {
   });
 }
 
+function uploadDir(url, data, p, originPath) {
+  var absPath = path.resolve(p);
+  !originPath && (originPath = absPath);
+  try {
+    fs.statSync(absPath);
+  }
+  catch (e){
+    console.log(color.red[0], 'Directory is not exist', color.red[1]);
+    console.error(e);
+    process.exit(1);
+  }
+
+  // Read dir sync
+  var dirs = fs.readdirSync(absPath);
+  dirs.forEach(function(item) {
+    item = path.join(absPath,item);
+    var stats = fs.statSync(item);
+    if (stats.isDirectory()) {
+      uploadDir(url, data, item, originPath);
+    }
+    else if (stats.isFile()) {
+      data.to = path.join(data.origin, path.relative(originPath, absPath));
+      uploadSingleFile(url, data, item)
+    }
+  });
+}
 
 function help () {
   console.log(
@@ -139,7 +165,7 @@ function help () {
       '  --url     | -u Specify the server url, example: http://127.0.0.1:8000/upload\n' +
       '  --name    | -n The file name saved in server, default same with file name\n' +
       '  --to      | -t The file saved dir in server, default "./"\n' +
-      '  --dir     | -d Upload directory'
+      '  --dir     | -d Upload directory, if had specify file, the option will be ignored'
   );
 }
 
@@ -149,17 +175,21 @@ if (argv.h || argv.help) {
 }
 
 var url = argv.u || argv.url || 'http://127.0.0.1:8000/upload';
-var to = argv.d || argv.dist || './';
+var to = argv.t || argv.to || './';
 var name = argv.name || argv.n;
 var file = argv.file || argv.f || argv._;
+var dir = argv.d || argv.dir;
 
-if (!file || (Array.isArray(file) && !file.length)) {
-  console.error(color.red[0], 'Need specify a file to upload', color.red[1]);
-  process.exit(1);
-}
-
-if (Array.isArray(file)) {
-  uploadMultiFile(url, {to: to}, file);
-}else {
+if (file && !Array.isArray(file)) {
   uploadSingleFile(url, {to: to}, file, name);
+}
+else if (Array.isArray(file) && file.length){
+  uploadMultiFile(url, {to: to}, file);
+}
+else if (dir) {
+  uploadDir(url, {origin: to}, dir);
+}
+else {
+  console.error(color.red[0], 'Need specify a file or dir to upload', color.red[1]);
+  process.exit(1);
 }
