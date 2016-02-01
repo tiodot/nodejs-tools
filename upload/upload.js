@@ -102,7 +102,10 @@ function upload (url, data, content, filename, callback) {
 
 function uploadSingleFile(url, data, file, name) {
   if (!name) {
-    name = path.basename(file);
+    name = encodeURI(path.basename(file));
+  }
+  else {
+    name = encodeURI(name);
   }
 
   if (url.indexOf('http://') === -1) {
@@ -174,8 +177,9 @@ if (argv.h || argv.help) {
   process.exit(1);
 }
 
-var url = argv.u || argv.url || 'http://127.0.0.1:8000/upload';
+var url = argv.u || argv.url || 'http://127.0.0.1:8337';
 var to = argv.t || argv.to || './';
+to = encodeURI(to);
 var name = argv.name || argv.n;
 var file = argv.file || argv.f || argv._;
 var dir = argv.d || argv.dir;

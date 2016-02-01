@@ -30,15 +30,16 @@ http.createServer(function(req, res){
   var form = new formidable.IncomingForm();
   form.uploadDir = '../tmp';
   form.parse(req, function(err, fields, files) {
-    var toDir = path.resolve(process.cwd(), fields.to);
+    var toDir = path.resolve(process.cwd(), decodeURI(fields.to));
+    var fileName = decodeURI(files.file.name);
     if (!exists(toDir)) {
       console.log('Create dir ' + toDir);
       mkdir(toDir);
     }
-    fs.renameSync(files.file.path, toDir + path.sep + files.file.name);
-    console.info('Saved file ' + toDir + path.sep + files.file.name);
+    fs.renameSync(files.file.path, toDir + path.sep + fileName);
+    console.info('Saved file ' + toDir + path.sep + fileName);
     res.writeHead(200, {'content-type': 'text/plain'});
-    res.write('received upload:' + files.file.name);
+    res.write('received upload:' + fileName);
     res.end();
   });
 }).listen(8337);
