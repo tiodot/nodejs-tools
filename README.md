@@ -1,7 +1,7 @@
 # nodejs-tools
 nodejs一些小工具，纯属学习。
 
-# upload目录——文件上传和接受
+# upload目录——文件上传和接收
 该目录下是nodejs实现的简易的文件上传。使用步骤：
 
 1. 部署receiver.js，这个用于服务器端接受文件；
