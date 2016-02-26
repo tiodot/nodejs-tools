@@ -6,7 +6,7 @@ var util = require('util');
 
 http.createServer(function(req, res) {
   var urlObj = url.parse(req.url);
-  console.log(util.inspect(urlObj));
+  //console.log(util.inspect(urlObj));
   var filePath = '.' + decodeURI(urlObj.pathname);
   console.log('request '+ filePath + ' starting...');
 
@@ -22,7 +22,13 @@ http.createServer(function(req, res) {
     var prefix = decodeURI(urlObj.pathname);
     prefix.slice(-1) !== '/' ? prefix += '/' : '';
     dir.forEach(function(file) {
-      content += '<a href="' + prefix + file + '">'+ file +'</a><br />';
+      var fileState = fs.statSync('.' + prefix + file);
+      if (fileState.isDirectory()) {
+        content += '<a href="' + prefix + file + '">'+ file +'</a><br />';
+      }
+      else {
+        content += '<a href="' + prefix + file + '" download>'+ file +'</a><br />';
+      }
     });
     res.writeHead(200, {'Content-Type': 'text/html'});
     res.end(content, 'utf-8');
