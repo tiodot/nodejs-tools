@@ -46,6 +46,6 @@ function parseUrlParameterToJson(hashBased) {
 //获取url指定参数的值, e.g. www.domain.com/?v=123&p=hello  ==> getParameterByName('v')=>123
 function getParameterByName(name) {
   var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.href);
-  return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+  return match && decodeURIComponent(match[1].replace(/\+/g, ' ')); //将加号换回空格
 }
 
