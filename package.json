@@ -1,0 +1,12 @@
+{
+  "name": "nodejs-tools",
+  "version": "0.0.1",
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "describe": "^1.2.0",
+    "mocha": "^3.0.2"
+  },
+  "scripts": {
+    "testCurry": "./node_modules/mocha/bin/mocha test/curry/curry.js"
+  }
+}
