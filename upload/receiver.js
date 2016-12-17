@@ -28,6 +28,7 @@ function mkdir (p, mode) {
 http.createServer(function(req, res){
   res.writeHead(200, {'Content-Type': 'text/plain'});
   var form = new formidable.IncomingForm();
+  mkdir('../tmp');
   form.uploadDir = '../tmp';
   form.parse(req, function(err, fields, files) {
     var toDir = path.resolve(process.cwd(), decodeURI(fields.to));
