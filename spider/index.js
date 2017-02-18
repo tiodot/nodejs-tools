@@ -33,7 +33,7 @@ const crawler = new Crawler({
                         result['text'] = $(ele)[text]();
                     }
                     if (attr) {
-                        result[attr] = $(ele).attr(attr);
+                        result[attr] = attr === 'href' ? host + $(ele).attr(attr): $(ele).attr(attr);
                     }
                     if (type) {
                         result['type'] = type;
@@ -45,20 +45,18 @@ const crawler = new Crawler({
                 });
 
                 if (sel.action && sel.action.recursive) {
-                    results.forEach((result) => {
+                    saveList(wrapList(results));
+                    /*results.forEach((result) => {
                         crawler.queue({
                             uri: host + result[sel.output.attr],
                             config: sel.action
                         });
-                    });
+                    });*/
                 } else {
                     // 直接输入
                     output.push(...results);
                 }
             });
-
-            // $ is Cheerio by default
-            //a lean implementation of core jQuery designed specifically for the server
         }
         done();
     }
@@ -76,7 +74,7 @@ crawler.on('drain',function(){
     saveMD(toMD(output));
 });
 
-function toMD (output) {
+function toMD(output) {
     let md = '';
     for (let item of output) {
         switch (item.type) {
@@ -93,12 +91,29 @@ function toMD (output) {
     return md;
 }
 
-function saveMD (md) {
+function saveMD(md) {
     fs.writeFile('output.md', md, (err) => {
         if (err) {
             console.error(err);
             return;
         }
         console.log('success')
+    });
+}
+
+function wrapList(list) {
+    return {
+        total: list,
+        resolve: []
+    }
+}
+
+function saveList(lists) {
+    fs.writeFile('list.json', JSON.stringify(lists, null, 4), (err) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        console.log('success');
     });
 }
