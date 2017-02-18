@@ -1,0 +1,30 @@
+{
+    "url": "http://www.xigutang.com/zhuanti/libai.html",
+    "selector": [{
+        "root": ".tbox",
+        "element": "a",
+        "prop": {
+            "target": "_blank"
+        },
+        "action": {
+            "recursive": true,
+            "selector": [
+                {
+                    "root": ".title",
+                    "element": "h1",
+                    "action": {
+                        "output": "./libai.md"
+                    }
+                },
+                {
+                    "root": ".content",
+                    "element": "td p",
+                    "nth": 1,
+                    "action": {
+                        "output": "./libai.md"
+                    }
+                }
+            ]
+        }
+    }]
+}
