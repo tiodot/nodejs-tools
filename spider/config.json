@@ -1,10 +1,14 @@
 {
     "url": "http://www.xigutang.com/zhuanti/libai.html",
     "selector": [{
-        "root": ".tbox",
+        "root": ".speciallist .tbox",
         "element": "a",
         "prop": {
             "target": "_blank"
+        },
+        "output": {
+            "attr": "href",
+            "text": "text"
         },
         "action": {
             "recursive": true,
@@ -12,16 +16,18 @@
                 {
                     "root": ".title",
                     "element": "h1",
-                    "action": {
-                        "output": "./libai.md"
+                    "output": {
+                        "text": "text",
+                        "type": "h1"
                     }
                 },
                 {
                     "root": ".content",
                     "element": "td p",
-                    "nth": 1,
-                    "action": {
-                        "output": "./libai.md"
+                    "nth": 0,
+                    "output": {
+                        "text": "text",
+                        "type": "text"
                     }
                 }
             ]
