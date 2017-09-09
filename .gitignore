@@ -2,3 +2,6 @@
 .DS_Store
 node_modules
 upload/node_modules
+tmp
+upload/uploaded
+dependency
