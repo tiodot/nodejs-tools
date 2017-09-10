@@ -27,3 +27,10 @@ upload.js相关参数说明：
 
 # server目录——node简易文件服务器
 简易版本的静态资源服务器
+
+# promise目录——使用ES5实现一个简易版的promise
+主要注意点为：
+1. 使用setTimeout模拟一个异步操作
+2. then返回的是一个promise
+3. 如果promise为pending状态，需要保存其then中的回调函数。
+
