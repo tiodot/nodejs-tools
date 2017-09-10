@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Promise</title>
+    <script src="./index.js"></script>
+</head>
+<body>
+<script>
+    console.log('script start');
+    setTimeout(function() {
+        console.log('setTimeout');
+    }, 0)
+    new Promise(function (resolve, reject) {
+        console.log('promise start');
+        resolve('hello world');
+    }).then(function (val) {
+        console.log('promise then: ', val);
+    }).then(function (val) {
+        console.log('promise end');
+    });
+    console.log('script end');
+</script>
+</body>
+</html>

@@ -71,7 +71,24 @@ function handle(deferred) {
 }
 
 function nextTick(fn) {
-    setTimeout(fn, 0);
+    // 浏览器环境使用 mutation observer模拟异步，以区分setTimeout
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+        var BrowserMutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+        if (typeof BrowserMutationObserver !== 'function') {
+            setTimeout(fn, 0);
+            return;
+        }
+        var toggle = 1;
+        var observer = new BrowserMutationObserver(fn);
+        var node = document.createTextNode("");
+        observer.observe(node, {characterData: true});
+        toggle = -toggle;
+        node.data = toggle;
+    }
+    else {
+        setTimeout(fn, 0);
+    }
 }
-
-module.exports = Promise;
+if (typeof module !== 'undefined' && module.parent) {
+    module.exports = Promise;
+}
